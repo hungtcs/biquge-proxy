@@ -28,7 +28,7 @@ export class AppService {
         return document('#hotcontent > .l2 > .item').toArray().map(element => {
           const $element = cheerio(element);
           const id = $element.find('> .image > a').attr('href').replace(/\//g, '');
-          const cover = path.join(AppService.BIQUGE_BASE_URL, $element.find('> .image > a > img').attr('src'));
+          const cover = AppService.BIQUGE_BASE_URL + $element.find('> .image > a > img').attr('src');
           const name = $element.find('> dl > dt > a').text().trim();
           const author = $element.find('> dl > dt > span').text().trim();
           const description = $element.find('> dl > dd').text().trim().replace(/\s+/g, '');

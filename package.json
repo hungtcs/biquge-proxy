@@ -8,7 +8,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "concurrently \"nest build\" \"gulp build\"",
-    "start": "nest start",
+    "start": "node dist/main",
     "start:dev": "nest start --watch --watchAssets",
     "start:debug": "concurrently \"nest start --debug --watch --watchAssets\" \"gulp\"",
     "start:prod": "node dist/main",
