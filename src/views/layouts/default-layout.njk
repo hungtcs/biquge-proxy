@@ -1,15 +1,19 @@
 {% extends "./base-layout.njk" %}
 
 {% block head_bottom %}
-  <link rel="stylesheet" href="assets/styles/layout.css" />
+  <meta name="theme-color" content="#3F51B5" />
+  <link rel="stylesheet" href="assets/styles/layouts/default-layout/index.css" />
+  <script src="assets/scripts/mat-icon.element.js" type="module"></script>
   {% block head_styles %}{% endblock %}
 {% endblock %}
 
 {% block body_top %}
   <header id="header">
-    <section class="header__left">Left</section>
-    <section class="header__center">Center</section>
-    <section class="header__right">Right</section>
+    <section class="header__left">
+      <h2>笔趣阁代理</h2>
+    </section>
+    <section class="header__center"></section>
+    <section class="header__right"></section>
   </header>
 {% endblock %}
 
@@ -20,6 +24,19 @@
 {% endblock %}
 
 {% block body_bottom %}
-  <footer id="footer">Footer</footer>
+  <footer id="footer">
+    <section>
+      <a href="/">
+        <mat-icon>menu_book</mat-icon>
+        <span>书架</span>
+      </a>
+    </section>
+    <section>
+      <a href="/search.html">
+        <mat-icon>search</mat-icon>
+        <span>搜索</span>
+      </a>
+    </section>
+  </footer>
   {% block body_bottom_scripts %}{% endblock %}
 {% endblock %}

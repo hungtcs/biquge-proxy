@@ -1,13 +1,29 @@
 
 
 .chapter {
-  padding: 0px 16px;
+  padding: 1rem;
+  > h3 {
+    margin: 0px 0px 1rem 0px;
+  }
 }
+
 p {
   margin: 0px 0px 16px 0px;
-  font-size: 18px;
-  line-height: 1.5;
-  text-indent: 2em;
+  font-size: 20px;
+  line-height: 1.8;
+  text-indent: 1em;
   font-weight: 500;
   white-space: pre-wrap;
+}
+
+.navigations {
+  height: 64px;
+  display: flex;
+  flex-flow: row nowrap;
+  > a {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }

@@ -1,0 +1,36 @@
+@import "../../variables";
+
+%header {
+  color: #FFFFFF;
+  height: 56px;
+  z-index: 4;
+  display: flex;
+  padding: 0px 16px;
+  flex-flow: row nowrap;
+  box-shadow: 0 3px 5px -1px rgba(0,0,0,.2),
+              0 6px 10px 0 rgba(0,0,0,.14),
+              0 1px 18px 0 rgba(0,0,0,.12);
+  box-sizing: border-box;
+  background-color: $primary-color;
+  > section {
+    display: flex;
+    align-items: center;
+    &.header__left,
+    &.header__right {
+      flex: 0 0 auto;
+    }
+    &.header__right {
+      justify-content: flex-end;
+    }
+    &.header__center {
+      flex: 1 1 auto;
+    }
+    &.header__left {
+      > h2 {
+        margin: 0px;
+        font-size: 1rem;
+        font-weight: 400;
+      }
+    }
+  }
+}

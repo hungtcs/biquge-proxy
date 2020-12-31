@@ -2,7 +2,9 @@
 html,
 body {
   width: 100vw;
+  width: -webkit-fill-available;
   height: 100vh;
+  height: -webkit-fill-available;
 }
 
 body {
@@ -13,18 +15,8 @@ body {
   flex-flow: column nowrap;
 }
 
-#header {
-  flex: 0 0 auto;
-}
-
-#footer {
-  flex: 0 0 auto;
-}
-
 #content {
   flex: 1 1 auto;
   overflow-x: hidden;
   overflow-y: auto;
 }
-
-@import "./components/header";

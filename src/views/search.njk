@@ -1,35 +1,10 @@
 {% extends "./layouts/default-layout.njk" %}
 
-{% block head_styles %}
-  <link rel="stylesheet" href="assets/styles/pages/search.css" />
-{% endblock %}
-
 {% block content %}
-  <div class="book-list">
-    {% for book in books %}
-      <section data-id="{{ book.id }}">
-        <div class="cover">
-          <img src="{{ book.cover }}" />
-        </div>
-        <div class="detail">
-          <h3>
-            <span>{{ book.name }}</span>
-            <span>{{ book.author }}</span>
-          </h3>
-          <pre>{{ book.description }}</pre>
-        </div>
-      </section>
-    {% endfor %}
-  </div>
-{% endblock %}
 
-{% block body_bottom_scripts %}
-  <script>
-    document.querySelectorAll('.book-list > section').forEach(item => {
-      item.addEventListener('click', () => {
-        const bookId = item.getAttribute('data-id');
-        window.location.assign(`detail/${ bookId }`);
-      });
-    });
-  </script>
+  <form action="/search-result.html">
+    <input type="text" name="keyword" placeholder="输入搜索" />
+    <button type="submit">搜索</button>
+  </form>
+
 {% endblock %}

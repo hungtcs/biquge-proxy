@@ -1,0 +1,22 @@
+
+%footer {
+  height: 64px;
+  display: flex;
+  font-size: 14px;
+  flex-flow: row nowrap;
+  border-top: 1px solid rgba($color: #000000, $alpha: 0.128);
+  box-sizing: border-box;
+  > section {
+    flex: 1 1 auto;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    > a {
+      color: #333333;
+      outline: none;
+      display: contents;
+      text-decoration: none;
+    }
+  }
+}

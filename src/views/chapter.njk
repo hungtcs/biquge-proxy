@@ -1,17 +1,23 @@
-{% extends "./layouts/default-layout.njk" %}
+{% extends "./layouts/full-screen-layout.njk" %}
 
 {% block head_styles %}
-  <link rel="stylesheet" href="assets/styles/pages/chapter.css" />
+  <link rel="stylesheet" href="/assets/styles/pages/chapter.css" />
 {% endblock %}
 
 {% block content %}
   <div class="chapter">
+    <h3>{{ chapterTitle }}</h3>
     {% for p in ps %}
       <p>{{ p }}</p>
     {% endfor %}
   </div>
-{% endblock %}
-
-{% block body_bottom_scripts %}
-
+  <section class="navigations">
+    {% if preId !== null %}
+      <a href="/chapter/{{ id }}/{{ preId }}">上一章</a>
+    {% endif %}
+    <a href="/detail/{{ id }}">目录</a>
+    {% if nextId !== null %}
+      <a href="/chapter/{{ id }}/{{ nextId }}">下一张</a>
+    {% endif %}
+  </section>
 {% endblock %}

@@ -13,14 +13,18 @@ export class AppController {
   @Get()
   @Render('index.njk')
   public index() {
-    return {
-
-    };
+    return {};
   }
 
-  @Get('search')
+  @Get('search.html')
   @Render('search.njk')
-  public search(
+  public search() {
+    return {};
+  }
+
+  @Get('search-result.html')
+  @Render('search-result.njk')
+  public doSearch(
       @Query('keyword') keyword: string) {
     return this.appService.search(keyword)
       .pipe(map(books => ({ books })));
@@ -41,7 +45,7 @@ export class AppController {
       @Param('id') id: string,
       @Param('chapterId') chapterId: string) {
     return this.appService.getChapter(id, chapterId)
-        .pipe(map(ps => ({ ps })))
+        .pipe(map(ps => ({ ...ps, id, chapterId })));
   }
 
 }

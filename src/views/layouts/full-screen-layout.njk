@@ -1,0 +1,22 @@
+{% extends "./base-layout.njk" %}
+
+{% block head_bottom %}
+  <meta name="theme-color" content="#FFFFFF" />
+  <link rel="stylesheet" href="assets/styles/layouts/full-screen-layout/index.css" />
+  {% block head_styles %}{% endblock %}
+{% endblock %}
+
+{% block body_top %}
+
+{% endblock %}
+
+{% block body_content %}
+  <main id="content">
+    {% block content %}{% endblock %}
+  </main>
+{% endblock %}
+
+{% block body_bottom %}
+  {% block body_bottom_content %}{% endblock %}
+  {% block body_bottom_scripts %}{% endblock %}
+{% endblock %}

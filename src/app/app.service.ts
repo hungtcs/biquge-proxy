@@ -85,8 +85,11 @@ export class AppService {
         const document = cheerio.load(html);
         const content = document('#content');
         content.find('div').remove();
-        const text = content.text();
-        return text.split(/\s{2}/).map(a => a.trim()).filter(a => a.length > 0);
+        const ps = content.text().split(/\s{2}/).map(a => a.trim()).filter(a => a.length > 0);
+        const chapterTitle = document('div.bookname > h1').text().trim();
+        const preId = document('div.bookname a.pre').attr('href').replace(/(\.html)|(\/[\d_]+\/)/g, '');
+        const nextId = document('div.bookname a.next').attr('href').replace(/(\.html)|(\/[\d_]+\/)/g, '') || null;
+        return { ps, chapterTitle, preId, nextId };
       }));
   }
 
