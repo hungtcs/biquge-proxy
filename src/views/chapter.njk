@@ -1,0 +1,17 @@
+{% extends "./layouts/default-layout.njk" %}
+
+{% block head_styles %}
+  <link rel="stylesheet" href="assets/styles/pages/chapter.css" />
+{% endblock %}
+
+{% block content %}
+  <div class="chapter">
+    {% for p in ps %}
+      <p>{{ p }}</p>
+    {% endfor %}
+  </div>
+{% endblock %}
+
+{% block body_bottom_scripts %}
+
+{% endblock %}

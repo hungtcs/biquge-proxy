@@ -1,0 +1,22 @@
+
+#header {
+  height: 56px;
+  display: flex;
+  padding: 0px 20px;
+  flex-flow: row nowrap;
+  box-sizing: border-box;
+  > section {
+    display: flex;
+    align-items: center;
+    &.header__left,
+    &.header__right {
+      flex: 0 0 auto;
+    }
+    &.header__right {
+      justify-content: flex-end;
+    }
+    &.header__center {
+      flex: 1 1 auto;
+    }
+  }
+}

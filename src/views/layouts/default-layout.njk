@@ -1,0 +1,25 @@
+{% extends "./base-layout.njk" %}
+
+{% block head_bottom %}
+  <link rel="stylesheet" href="assets/styles/layout.css" />
+  {% block head_styles %}{% endblock %}
+{% endblock %}
+
+{% block body_top %}
+  <header id="header">
+    <section class="header__left">Left</section>
+    <section class="header__center">Center</section>
+    <section class="header__right">Right</section>
+  </header>
+{% endblock %}
+
+{% block body_content %}
+  <main id="content">
+    {% block content %}{% endblock %}
+  </main>
+{% endblock %}
+
+{% block body_bottom %}
+  <footer id="footer">Footer</footer>
+  {% block body_bottom_scripts %}{% endblock %}
+{% endblock %}

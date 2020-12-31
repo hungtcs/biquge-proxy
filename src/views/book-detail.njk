@@ -1,0 +1,26 @@
+{% extends "./layouts/default-layout.njk" %}
+
+{% block head_styles %}
+
+{% endblock %}
+
+{% block content %}
+  <p>{{ book.id }}</p>
+  <p>{{ book.name }}</p>
+  <img src="{{ book.cover }}" />
+  <p>{{ book.author }}</p>
+  <p>{{ book.description }}</p>
+
+  <ul>
+    {% for chapter in book.chapters %}
+      <li>
+        <a href="chapter/{{ book.id }}/{{ chapter.id }}">{{ chapter.name }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+
+{% endblock %}
+
+{% block body_bottom_scripts %}
+
+{% endblock %}
