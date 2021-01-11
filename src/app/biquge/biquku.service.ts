@@ -1,23 +1,76 @@
-import path from 'path';
 import cheerio from 'cheerio';
 import { URL } from 'url';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, OnModuleInit, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/common/http';
 import { map, tap } from 'rxjs/operators';
-import { Book, Chapter } from './entities';
+import { Book, Chapter } from '../entities';
 import { ElementType } from "domelementtype";
+import { Observable, of } from 'rxjs';
+import fs from 'fs';
+import path from 'path';
+
+function ChapterPreload(): MethodDecorator {
+  const cacheMap = new Map<string, any>();
+  return (target, propertyKey, descriptor: TypedPropertyDescriptor<any>) => {
+    const origin = descriptor.value;
+    descriptor.value = function(id: string, chapterId: string) {
+      const cache = cacheMap.get(`${ chapterId }@${ id }`);
+      if(!cache) {
+        const _result = origin.call(this, id, chapterId) as Observable<{ ps: string[]; chapterTitle: string; preId: string; nextId: string; }>;
+        const result = _result
+          .pipe(tap(({ nextId }) => {
+            if(nextId) {
+              origin.call(this, id, nextId)
+                .pipe(tap(data => cacheMap.set(`${ nextId }@${ id }`, data)))
+                .subscribe();
+            }
+          }))
+          .pipe(tap(data => cacheMap.set(`${ chapterId }@${ id }`, data)));
+        cacheMap.set(`${ chapterId }@${ id }`, result);
+        return result;
+      } else if(cache instanceof Observable) {
+        return cache;
+      } else {
+        return of(cache)
+          .pipe(tap(({ nextId }) => {
+            if(nextId) {
+              origin.call(this, id, nextId)
+                .pipe(tap(data => cacheMap.set(`${ nextId }@${ id }`, data)))
+                .subscribe();
+            }
+          }));
+      }
+    };
+    return descriptor;
+  };
+}
 
 @Injectable()
-export class AppService {
+export class BiqugeService implements OnModuleInit {
+
   private static BIQUGE_BASE_URL = 'https://www.biquge.com';
 
-  constructor(
-      private readonly http: HttpService) {
+  private get baseURL() {
+    return BiqugeService.BIQUGE_BASE_URL;
+  }
 
+  private cacheRootDir: string;
+
+  constructor(
+      private readonly http: HttpService,
+      private readonly logger: Logger,
+      @Inject('CONFIG_DIR') private readonly configDir: string) {
+    this.cacheRootDir = path.join(this.configDir, 'biquge');
+  }
+
+  public async onModuleInit() {
+    if(!fs.existsSync(this.cacheRootDir)) {
+      await fs.promises.mkdir(this.cacheRootDir, { recursive: true });
+    }
   }
 
   public search(keyword: string) {
-    return this.http.get<string>(`${ AppService.BIQUGE_BASE_URL }/searchbook.php`, {
+    return this.http.get<string>(`${ this.baseURL }/searchbook.php`, {
         params: {
           keyword,
         },
@@ -28,7 +81,7 @@ export class AppService {
         return document('#hotcontent > .l2 > .item').toArray().map(element => {
           const $element = cheerio(element);
           const id = $element.find('> .image > a').attr('href').replace(/\//g, '');
-          const cover = AppService.BIQUGE_BASE_URL + $element.find('> .image > a > img').attr('src');
+          const cover = this.baseURL + $element.find('> .image > a > img').attr('src');
           const name = $element.find('> dl > dt > a').text().trim();
           const author = $element.find('> dl > dt > span').text().trim();
           const description = $element.find('> dl > dd').text().trim().replace(/\s+/g, '');
@@ -39,10 +92,12 @@ export class AppService {
   }
 
   public getBook(id: string) {
-    return this.http.get<string>(`${ AppService.BIQUGE_BASE_URL }/${ id }/`, {
+    this.logger.log(`getBook, ${ id }, ${ this.baseURL }/${ id }/`);
+    return this.http.get<string>(`${ this.baseURL }/${ id }/`, {
         responseType: 'text',
       })
       .pipe(map(response => response.data))
+      .pipe(tap(() => this.logger.log('remote responsed')))
       .pipe(map(html => {
         let flag = false;
         const document = cheerio.load(html);
@@ -75,12 +130,16 @@ export class AppService {
         }, []);
 
         return new Book({ id, name, author, cover, description, chapters });
-      }));
+      }))
+      .pipe(tap(() => this.logger.log('local responsed')));
   }
 
+  @ChapterPreload()
   public getChapter(id: string, chapterId: string) {
-    return this.http.get(`${ AppService.BIQUGE_BASE_URL }/${ id }/${ chapterId }.html`, { responseType: 'text' })
+    this.logger.log(`getChapter, ${ chapterId }@${ id }`);
+    return this.http.get(`${ this.baseURL }/${ id }/${ chapterId }.html`, { responseType: 'text' })
       .pipe(map(response => response.data))
+      .pipe(tap(() => this.logger.log(`remote response, ${ chapterId }@${ id }`)))
       .pipe(map(html => {
         const document = cheerio.load(html);
         const content = document('#content');
@@ -90,7 +149,8 @@ export class AppService {
         const preId = document('div.bookname a.pre').attr('href').replace(/(\.html)|(\/[\d_]+\/)/g, '');
         const nextId = document('div.bookname a.next').attr('href').replace(/(\.html)|(\/[\d_]+\/)/g, '') || null;
         return { ps, chapterTitle, preId, nextId };
-      }));
+      }))
+      .pipe(tap(() => this.logger.log(`local response, ${ chapterId }@${ id }`)));
   }
 
 }

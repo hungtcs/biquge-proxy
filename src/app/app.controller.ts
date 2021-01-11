@@ -1,12 +1,12 @@
-import { AppService } from './app.service';
-import { Controller, Get, Param, Query, Render } from '@nestjs/common';
 import { map } from 'rxjs/operators';
+import { BiqugeService } from './biquge/biquku.service';
+import { Controller, Get, Param, Query, Render } from '@nestjs/common';
 
 @Controller()
 export class AppController {
 
   constructor(
-      private readonly appService: AppService) {
+      private readonly biqugeService: BiqugeService) {
 
   }
 
@@ -26,7 +26,7 @@ export class AppController {
   @Render('search-result.njk')
   public doSearch(
       @Query('keyword') keyword: string) {
-    return this.appService.search(keyword)
+    return this.biqugeService.search(keyword)
       .pipe(map(books => ({ books })));
   }
 
@@ -34,7 +34,7 @@ export class AppController {
   @Render('book-detail.njk')
   public detail(
       @Param('id') id: string) {
-    return this.appService.getBook(id)
+    return this.biqugeService.getBook(id)
       .pipe(map(book => (book.chapters = book.chapters.reverse(), book)))
       .pipe(map(book => ({ book })));
   }
@@ -44,7 +44,7 @@ export class AppController {
   public chapter(
       @Param('id') id: string,
       @Param('chapterId') chapterId: string) {
-    return this.appService.getChapter(id, chapterId)
+    return this.biqugeService.getChapter(id, chapterId)
         .pipe(map(ps => ({ ...ps, id, chapterId })));
   }
 

@@ -1,6 +1,9 @@
-import { HttpModule, Module } from '@nestjs/common';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { BiqugeService } from './biquge/biquku.service';
+import { HttpModule, Inject, Logger, Module, OnModuleInit } from '@nestjs/common';
 
 @Module({
   imports: [
@@ -16,10 +19,30 @@ import { AppService } from './app.service';
     }),
   ],
   providers: [
-    AppService,
+    Logger,
+    BiqugeService,
+    {
+      provide: 'CONFIG_DIR',
+      useValue: path.join(os.homedir(), '.config/biquge-proxy'),
+    },
   ],
   controllers: [
     AppController,
   ],
 })
-export class AppModule {}
+export class AppModule implements OnModuleInit {
+
+  constructor(
+      @Inject('CONFIG_DIR') private readonly configDir: string) {
+
+  }
+
+  public async onModuleInit() {
+    if(os.platform() === 'linux') {
+      if(!fs.existsSync(this.configDir)) {
+        await fs.promises.mkdir(this.configDir, { recursive: true });
+      }
+    }
+  }
+
+}
